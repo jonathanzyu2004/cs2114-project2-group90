@@ -13,6 +13,7 @@ public class Node<T> {
     /**
      * Creates a node containing the specified data.
      * @param data the data to store in the node
+     * 
      */
     public Node(T data) {
         this.data = data;

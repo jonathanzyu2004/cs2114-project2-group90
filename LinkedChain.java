@@ -33,16 +33,12 @@ public class LinkedChain<T>
     public boolean add(T entry) {
         Node<T> newNode = new Node<T> (entry);
         
-        if(isEmpty()) {
-            head = newNode;
+        newNode.setNext(head);
+        head = newNode;
+        
+        if (tail == null) {
             tail = newNode;
         }
-        
-        else {
-            newNode.setNext(head);
-            head = newNode;
-        }
-        
         size++;
         return true;
     }
@@ -56,7 +52,7 @@ public class LinkedChain<T>
     public boolean addToEnd(T entry) {
         Node<T> newNode = new Node<T> (entry);
         
-        if(isEmpty()) {
+        if(head == null) {
             head = newNode;
             tail = newNode;
         }
@@ -75,13 +71,11 @@ public class LinkedChain<T>
      *
      * @param index the position where the entry should be added
      * @param entry the entry to add
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @throws PlaylistException if the index is invalid
      */
-    public void add(int index, T entry) {
+    public void add(int index, T entry) throws PlaylistException{
         if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException(
-                "Index: " + index + ", Size: " + size
-            );
+            throw new PlaylistException("Invalid Index");
         }
         
         if (index == 0) {
@@ -94,15 +88,16 @@ public class LinkedChain<T>
             return;
         }
         
-        Node<T> newNode = new Node<T>(entry);
-        Node<T> previous = head;
-
+        Node<T> current = head;
+        
         for (int i = 0; i < index - 1; i++) {
-            previous = previous.getNext();
+            current = current.getNext();
         }
+        
+        Node<T> newNode = new Node<T>(entry);
 
-        newNode.setNext(previous.getNext());
-        previous.setNext(newNode);
+        newNode.setNext(current.getNext());
+        current.setNext(newNode);
 
         size++;
     }
@@ -111,16 +106,17 @@ public class LinkedChain<T>
      * Removes and returns the first entry in the chain.
      *
      * @return the entry that was removed
-     * @throws IndexOutOfBoundsException if the chain is empty
+     * @throws PlaylistException if the chain is empty
      */
-    public T remove() {
+    public T remove() throws PlaylistException{
         if (isEmpty()) {
-            throw new IndexOutOfBoundsException(
-                "Cannot remove from an empty chain."
+            throw new PlaylistException(
+                "Playlist is empty"
             );
         }
 
-        T removedData = head.getData();
+        T removed = head.getData();
+        
         head = head.getNext();
         size--;
 
@@ -128,16 +124,17 @@ public class LinkedChain<T>
             tail = null;
         }
 
-        return removedData;
+        return removed;
     }
     
     /**
      * Removes the first occurrence of the specified entry.
      *
      * @param entry the entry to remove
+     * @throws PlaylistException if the chain is empty
      * @return true if the entry was found and removed, false otherwise
      */
-    public boolean remove(T entry) {
+    public boolean remove(T entry) throws PlaylistException{
         if (isEmpty()) {
             return false;
         }
@@ -182,17 +179,19 @@ public class LinkedChain<T>
      *
      * @param index the index of the entry to retrieve
      * @return the entry at the specified index
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @throws PlaylistException if the index is invalid
      */
-    public T get(int index) {
-        checkIndex(index);
-
+    public T get(int index) throws PlaylistException {
+        if(index<0||index>=size) {
+            throw new PlaylistException("Invalid index");
+        }
+        
         Node<T> current = head;
-
-        for (int i = 0; i < index; i++) {
+        
+        for(int i = 0; i<index; i++) {
             current = current.getNext();
         }
-
+        
         return current.getData();
     }
     
@@ -298,17 +297,4 @@ public class LinkedChain<T>
         return result.toString();
     }
     
-    /**
-     * Checks whether an index is valid for accessing an existing entry.
-     *
-     * @param index the index to check
-     * @throws IndexOutOfBoundsException if the index is invalid
-     */
-    private void checkIndex(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException(
-                "Index: " + index + ", Size: " + size
-            );
-        }
-    }
 }
