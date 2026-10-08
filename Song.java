@@ -28,7 +28,7 @@ public class Song {
     public Song(String title, String artist, String album, double duration) {
         this.title = title;
         this.artist = artist;
-        this.album = artist;
+        this.album = album;
         this.duration = duration;
     }
 
