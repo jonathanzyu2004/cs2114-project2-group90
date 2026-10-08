@@ -24,8 +24,22 @@ public class SongTest extends TestCase {
      * 
      */
     public void testSetTitle() {
-        assertEquals("title", song.getTitle());
-        song.setTitle("new title");
+        Exception error = null;
+
+        try {
+            song.setTitle(null);
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
+        assertNotNull(error);
+
+        try {
+            song.setTitle("new title");
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
         assertEquals("new title", song.getTitle());
 
     }
@@ -47,8 +61,22 @@ public class SongTest extends TestCase {
      * 
      */
     public void testSetArtist() {
-        assertEquals("artist", song.getArtist());
-        song.setArtist("new artist");
+        Exception error = null;
+
+        try {
+            song.setArtist(null);
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
+        assertNotNull(error);
+
+        try {
+            song.setArtist("new artist");
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
         assertEquals("new artist", song.getArtist());
     }
 
@@ -69,8 +97,22 @@ public class SongTest extends TestCase {
      * 
      */
     public void testSetAlbum() {
-        assertEquals("album", song.getAlbum());
-        song.setAlbum("new album");
+        Exception error = null;
+
+        try {
+            song.setAlbum(null);
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
+        assertNotNull(error);
+
+        try {
+            song.setAlbum("new album");
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
         assertEquals("new album", song.getAlbum());
 
     }
@@ -92,8 +134,22 @@ public class SongTest extends TestCase {
      * 
      */
     public void testSetDuration() {
-        assertEquals(1.0, song.getDuration(), 3);
-        song.setDuration(45.0);
+        Exception error = null;
+
+        try {
+            song.setDuration(0.0);
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
+        assertNotNull(error);
+
+        try {
+            song.setDuration(45.0);
+        }
+        catch (PlaylistException e) {
+            error = e;
+        }
         assertEquals(45.0, song.getDuration(), 3);
     }
 
@@ -106,13 +162,16 @@ public class SongTest extends TestCase {
     public void testGetDuration() {
         assertEquals(1.0, song.getDuration(), 3);
     }
-    
+
+
     // ----------------------------------------------------------
     /**
      * Test toString method
      */
     public void testToString() {
-        assertEquals("Sound Title: title Artist: artist Album: album Duration: 1.0", song.toString());
+        assertEquals(
+            "Sound Title: title Artist: artist Album: album Duration: 1.0", song
+                .toString());
     }
 
 }
