@@ -23,11 +23,13 @@ placeholder
 ## Attribution
 | Class | Team Member(s) | Contribution |
 |:-----|:------|------|
-| Node<T> | placeholder | placeholder |
-| LinkedChain<T> | placeholder | placeholder |   
+| Node\<T> | placeholder | placeholder |
+| LinkedChain\<T> | placeholder | placeholder |   
 | PlaylistException | placeholder | placeholder |   
 | Song | placeholder | placeholder |   
+| SongTest | placeholder | placeholder |  
 | Playlist | placeholder | placeholder |   
+| PlaylistTest | placeholder | placeholder |   
 | Main | placeholder | placeholder |
 
 ## GenAI Note
