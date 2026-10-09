@@ -28,7 +28,7 @@ public class Song {
     public Song(String title, String artist, String album, double duration) {
         this.title = title;
         this.artist = artist;
-        this.album = artist;
+        this.album = album;
         this.duration = duration;
     }
 
@@ -51,8 +51,10 @@ public class Song {
      * 
      * @param title
      *            The new value for title.
+     * @throws PlaylistException
      */
-    public void setTitle(String title) {
+    public void setTitle(String title) throws PlaylistException {
+        isNull("Title", title);
         this.title = title;
     }
 
@@ -74,8 +76,10 @@ public class Song {
      * 
      * @param artist
      *            The new value for artist.
+     * @throws PlaylistException
      */
-    public void setArtist(String artist) {
+    public void setArtist(String artist) throws PlaylistException {
+        isNull("Artist", artist);
         this.artist = artist;
     }
 
@@ -97,8 +101,10 @@ public class Song {
      * 
      * @param album
      *            The new value for album.
+     * @throws PlaylistException
      */
-    public void setAlbum(String album) {
+    public void setAlbum(String album) throws PlaylistException {
+        isNull("Album", album);
         this.album = album;
     }
 
@@ -120,8 +126,13 @@ public class Song {
      * 
      * @param duration
      *            The new value for duration.
+     * @throws PlaylistException
      */
-    public void setDuration(double duration) {
+    public void setDuration(double duration) throws PlaylistException {
+        if (duration <= 0.0) {
+            throw new PlaylistException(
+                "Duration cannot be less than or equal to 0");
+        }
         this.duration = duration;
     }
 
@@ -129,5 +140,13 @@ public class Song {
     public String toString() {
         return "Sound Title: " + title + " Artist: " + artist + " Album: "
             + album + " Duration: " + duration;
+    }
+
+
+    private void isNull(String methodName, Object object)
+        throws PlaylistException {
+        if (object == null) {
+            throw new PlaylistException(methodName + " cannot be null");
+        }
     }
 }
