@@ -41,7 +41,7 @@ public class Playlist
 
     /**
      * add a song to the playlist
-     * 
+     * @param song the song we want to add
      * @throws PlaylistException
      */
     public void addSong(Song song)
@@ -87,7 +87,7 @@ public class Playlist
 
     /**
      * gets a song from a specific position
-     * 
+     * @param index the index of the song we want to get
      * @return the song at the specified position
      * @throws PlaylistException
      */
@@ -105,7 +105,7 @@ public class Playlist
      * 
      * @param song
      *            the song we want to edit
-     * @paran newTitle the new title
+     * @param newTitle the new title
      * @throws PlaylistException
      */
     public void editSongTitle(Song song, String newTitle)
@@ -152,14 +152,15 @@ public class Playlist
 
     /**
      * Update a song's duration
-     * 
+     * @param song the song we want to edit
+     * @param newDuration the new duration of the song
      * @throws PlaylistException
      */
-    public void editSongDuration(int index, String newDuration)
+    public void editSongDuration(Song song, double newDuration)
         throws PlaylistException
     {
-        checkIndexValidity(index);
-        songs.get(index).setTitle(newDuration);
+        Song target = findSong(song);
+        target.setDuration(newDuration);
     }
 
 
@@ -223,13 +224,13 @@ public class Playlist
     /**
      * searches songs by artist
      * 
-     * @param artist
+     * @param artist 
      *            the artist to search for
      * @return a chain containing matching songs
      */
     public LinkedChain<Song> searchByArtist(String artist)
     {
-        LinkedChain<Song> result = new LinkedChain<Song>();
+        LinkedChain<Song> result = new LinkedChain<Song>(); 
 
         for (int i = 0; i < songs.size(); i++)
         {
@@ -260,7 +261,7 @@ public class Playlist
         {
             Song song = songs.get(i);
 
-            if (song.getTitle().equals(title))
+            if (song.getTitle().contains(title))
             {
                 result.addToEnd(song);
             }
@@ -271,35 +272,31 @@ public class Playlist
 
 
     /**
-     * Combines two playlist into one
+     * Combines two playlists into one
      * 
-     * @param playlist1
-     *            the first playlist
-     * @param playlist2
+     * @param other
      *            the second playlist
-     * @return a new linkedchian containing both playlists
+     * @return a new linkedchain containing both playlists
      * @throws PlaylistException
      */
-    public LinkedChain<Song> combinePlaylist(
-        LinkedChain<Song> playlistA,
-        LinkedChain<Song> playlistB)
+    public LinkedChain<Song> combinePlaylist(Playlist other)
         throws PlaylistException
     {
-        if (playlistA == null || playlistB == null)
+        if (other == null)
         {
             throw new PlaylistException("Playlist cannot be null");
         }
 
         LinkedChain<Song> combined = new LinkedChain<Song>();
 
-        for (int i = 0; i < playlistA.size(); i++)
+        for (int i = 0; i < this.songs.size(); i++)
         {
-            combined.addToEnd(playlistA.get(i));
+            combined.addToEnd(this.songs.get(i));
         }
 
-        for (int i = 0; i < playlistB.size(); i++)
+        for (int i = 0; i < other.songs.size(); i++)
         {
-            combined.addToEnd(playlistB.get(i));
+            combined.addToEnd(other.songs.get(i));
         }
 
         return combined;
@@ -344,7 +341,7 @@ public class Playlist
     private void checkIndexValidity(int index)
         throws PlaylistException
     {
-        if (index < 0 || index > songs.size())
+        if (index < 0 || index >= songs.size())
         {
 
             throw new PlaylistException("Invalid Index");
