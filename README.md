@@ -2,9 +2,9 @@
 TuneChain
 ## Reflection
 - What changed from your specification? Classes, method signatures, where validation lives, test cases — what did the spec say, what did you build instead, and why?  
-placeholder
+The main change was that searching for songs by title or artist and combining playlists moved from stretch goals into the MVP, after the suggestion of our GTA. We decided to include these features because they were simpler to implement than we initially expected.
 - What changed in the LinkedChain? Anything you added to or modified in the provided class and why your application needed it, or that you used it unchanged.  
-placeholder
+We did not change anything from the provided linked-chain class because the provided methods are sufficient to support the functionality of our project. Using the provided implementation allowed us to focus on developing TuneChain's playlist management features without modifying the underlying data structure.
 - What happened to your unknowns? Of the things you listed in your scope as not knowing how to do, which did you figure out, and which are still open?  
 We were able to find a native Java solution to parsing Strings into doubles and were able to implement it cleanly.
 - What doesn't work yet? MVP features, bad-input cases, or tests that are missing or failing in this prototype.  
@@ -23,11 +23,11 @@ We will collaborate to come up with meaningful stretch goals, and then divide wo
 ## Attribution
 | Class | Team Member(s) | Contribution |
 |:-----|:------|:------|
-| LinkedChain\<T> | placeholder | placeholder |   
-| PlaylistException | placeholder | placeholder |   
+| LinkedChain\<T> | Provided | Provided |   
+| PlaylistException | Jonathan | Display appropriate error message |   
 | Song | Kyle | Wrote and revised file |   
 | SongTest | Kyle | Wrote and revised file |  
-| Playlist | placeholder | placeholder |   
-| PlaylistTest | Kyle | Reviewed test passing |   
-| Main | Kyle | Tested basic functionality |
+| Playlist | Jonathan | Functional playlist methods |   
+| PlaylistTest | Jonathan | Tested Playlist class |   
+| Main | Gao | Tested basic functionality |
 
