@@ -51,7 +51,7 @@ public class Main
     {
         while (true)
         {
-            System.out.print("Enter your choice: ");
+            System.out.print("\nEnter your choice: ");
             if (!keyboard.hasNextLine())
             {
                 return 0;

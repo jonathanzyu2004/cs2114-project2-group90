@@ -138,8 +138,8 @@ public class Song {
 
 
     public String toString() {
-        return "Sound Title: " + title + " Artist: " + artist + " Album: "
-            + album + " Duration: " + duration;
+        return "Song Title: " + title + ", Artist: " + artist + ", Album: "
+            + album + ", Duration: " + duration;
     }
 
 
