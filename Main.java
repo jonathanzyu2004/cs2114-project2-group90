@@ -184,14 +184,34 @@ public class Main
 
     private static double readDuration() throws PlaylistException
     {
-        // Playlist stores 3 minutes 30 seconds as 3.30, not 3.5.
-        int minutes = readNumber("Minutes (0-999): ", 0, 999);
-        int seconds = readNumber("Seconds (0-59): ", 0, 59);
-        if (minutes == 0 && seconds == 0)
+        // The decimal part represents seconds, not a fraction of a minute.
+        String text = readText("Duration (minutes.seconds, for example 4.30): ");
+        try
         {
-            throw new PlaylistException("Duration must be greater than zero.");
+            double duration = Double.parseDouble(text);
+            if (duration <= 0)
+            {
+                throw new PlaylistException("Duration must be greater than zero.");
+            }
+            if (duration > 0 && duration <= 999.59)
+            {
+                int minutes = (int)duration;
+                int seconds = (int)Math.round((duration - minutes) * 100);
+                // Allow only whole seconds from 0 to 59.
+                if (seconds < 60
+                    && Math.abs(duration * 100 - Math.round(duration * 100))
+                        < 0.000001)
+                {
+                    return duration;
+                }
+            }
         }
-        return minutes + seconds / 100.0;
+        catch (NumberFormatException exception)
+        {
+            // Invalid input is handled by the menu.
+        }
+        throw new PlaylistException(
+            "Enter minutes.seconds from 0.01 to 999.59, with seconds from 00 to 59.");
     }
 
     private static Song readSong() throws PlaylistException
