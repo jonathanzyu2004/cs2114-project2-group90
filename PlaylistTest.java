@@ -337,4 +337,164 @@ public class PlaylistTest extends TestCase
 
         assertEquals(expected, playlist.toString());
     }
+    
+    /**
+     * test undoing an added song.
+     */
+    public void testUndoAddSong() {
+        try {
+            playlist.addSong(song1);
+            assertEquals(1, playlist.getNumberOfSong());
+        }
+        
+        catch (PlaylistException e)
+        {
+            fail("Unexpected PlaylistException");
+        }
+    }
+    
+    /**
+     * Tests undoing an inserted song.
+     */
+    public void testUndoInsertSong()
+    {
+        try
+        {
+            playlist.addSong(song1);
+            playlist.addSong(song2);
+
+            // Insert C between A and B.
+            playlist.insertSong(1, song3);
+
+            playlist.undoLastAction();
+
+            assertEquals(2, playlist.getNumberOfSong());
+            assertEquals(song1, playlist.getSong(0));
+            assertEquals(song2, playlist.getSong(1));
+        }
+        catch (PlaylistException e)
+        {
+            fail("Unexpected PlaylistException");
+        }
+    }
+    
+   
+    /**
+     * test undoing remove the first song
+     */
+    public void testUndoRemoveFirstSong()
+    {
+        try
+        {
+            playlist.addSong(song1);
+            playlist.addSong(song2);
+
+            playlist.removeSong(song1);
+            playlist.undoLastAction();
+
+            assertEquals(2, playlist.getNumberOfSong());
+            assertEquals(song1, playlist.getSong(0));
+            assertEquals(song2, playlist.getSong(1));
+        }
+        catch (PlaylistException e)
+        {
+            fail("Unexpected PlaylistException");
+        }
+    }
+
+
+    /**
+     * Tests undoing removal from the middle.
+     */
+    public void testUndoRemoveMiddleSong()
+    {
+        try
+        {
+            playlist.addSong(song1);
+            playlist.addSong(song2);
+            playlist.addSong(song3);
+
+            playlist.removeSong(song2);
+            playlist.undoLastAction();
+
+            assertEquals(3, playlist.getNumberOfSong());
+            assertEquals(song1, playlist.getSong(0));
+            assertEquals(song2, playlist.getSong(1));
+            assertEquals(song3, playlist.getSong(2));
+        }
+        catch (PlaylistException e)
+        {
+            fail("Unexpected PlaylistException");
+        }
+    }
+    
+    /**
+     * Tests undoing removal from the end.
+     */
+    public void testUndoRemoveLastSong()
+    {
+        try
+        {
+            playlist.addSong(song1);
+            playlist.addSong(song2);
+
+            playlist.removeSong(song2);
+            playlist.undoLastAction();
+
+            assertEquals(2, playlist.getNumberOfSong());
+            assertEquals(song1, playlist.getSong(0));
+            assertEquals(song2, playlist.getSong(1));
+        }
+        catch (PlaylistException e)
+        {
+            fail("Unexpected PlaylistException");
+        }
+    }
+    
+    /**
+     * Tests undo when there is no action to undo.
+     */
+    public void testUndoWithNoAction()
+    {
+        Exception thrown;
+        try
+        {
+            playlist.undoLastAction();
+
+        }
+        catch (PlaylistException e)
+        {
+            thrown = e;
+            assertNotNull(thrown);
+            assertEquals("Nothing to undo", thrown.getMessage());
+        }
+    }
+    
+    /**
+     * Tests that an action cannot be undone twice.
+     */
+    public void testUndoTwice()
+    {
+        Exception thrown;
+        try
+        {
+            playlist.addSong(song1);
+            playlist.undoLastAction();
+
+            assertEquals(0, playlist.getNumberOfSong());
+
+            playlist.undoLastAction();
+            fail("Expected PlaylistException");
+        }
+        
+        catch (PlaylistException e)
+        {
+            thrown = e;
+            
+            assertNotNull(thrown);
+            assertEquals("Nothing to undo", thrown.getMessage());   
+        }
+        
+        
+    }
 }

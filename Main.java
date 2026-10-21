@@ -40,12 +40,13 @@ public class Main
         System.out.println("8. Search by title");
         System.out.println("9. Search by artist");
         System.out.println("10. Combine two playlists");
+        System.out.println("11. Undo last add/remove action");
         System.out.println("0. Exit");
     }
 
     /**
      * Reads a valid menu choice. End of input also exits the menu.
-     * @return a choice from 0 to 10
+     * @return a choice from 0 to 11
      */
     public static int readChoice()
     {
@@ -59,7 +60,7 @@ public class Main
             try
             {
                 int choice = Integer.parseInt(keyboard.nextLine().trim());
-                if (choice >= 0 && choice <= 10)
+                if (choice >= 0 && choice <= 11)
                 {
                     return choice;
                 }
@@ -68,7 +69,7 @@ public class Main
             {
                 // Show the same message for text and out-of-range numbers.
             }
-            System.out.println("Please enter a number from 0 to 10.");
+            System.out.println("Please enter a number from 0 to 11.");
         }
     }
 
@@ -138,6 +139,13 @@ public class Main
                 {
                     showMatches(current.searchByArtist(readText("Artist: ")));
                 }
+                
+                
+                else if (choice == 11)
+                {
+                    current.undoLastAction();
+                    System.out.println("Last add/remove action undone.");
+                }
             }
             catch (PlaylistException exception)
             {
@@ -149,70 +157,88 @@ public class Main
 
     private static String readText(String prompt) throws PlaylistException
     {
-        System.out.print(prompt);
-        if (!keyboard.hasNextLine())
+        while (true)
         {
-            throw new PlaylistException("Input ended.");
+            System.out.print(prompt);
+
+            if (!keyboard.hasNextLine())
+            {
+                throw new PlaylistException("Input ended.");
+            }
+
+            String text = keyboard.nextLine().trim();
+
+            if (text.length() > 0)
+            {
+                return text;
+            }
+
+            System.out.println("Please enter some text.");
         }
-        String text = keyboard.nextLine().trim();
-        if (text.length() == 0)
-        {
-            throw new PlaylistException("Please enter some text.");
-        }
-        return text;
     }
 
     private static int readNumber(String prompt, int minimum, int maximum)
         throws PlaylistException
     {
-        String text = readText(prompt);
-        try
-        {
-            int number = Integer.parseInt(text);
-            if (number >= minimum && number <= maximum)
+        while (true) {
+            String text = readText(prompt);
+            try
             {
-                return number;
+                int number = Integer.parseInt(text);
+                if (number >= minimum && number <= maximum)
+                {
+                    return number;
+                }
             }
+            catch (NumberFormatException exception)
+            {
+                // Invalid input is handled after the catch block
+            }
+            System.out.println("Please enter a number from " + minimum
+                + " to " + maximum + ".");
         }
-        catch (NumberFormatException exception)
-        {
-            // Invalid input is handled by the menu.
-        }
-        throw new PlaylistException("Please enter a number from " + minimum
-            + " to " + maximum + ".");
+        
     }
+
 
     private static double readDuration() throws PlaylistException
     {
-        // The decimal part represents seconds, not a fraction of a minute.
-        String text = readText("Duration (minutes.seconds, for example 4.30): ");
-        try
+        while (true)
         {
-            double duration = Double.parseDouble(text);
-            if (duration <= 0)
+            // The decimal part represents seconds, not a fraction of a minute.
+            String text = readText(
+                "Duration (minutes.seconds, for example 4.30): ");
+
+            try
             {
-                throw new PlaylistException("Duration must be greater than zero.");
-            }
-            if (duration > 0 && duration <= 999.59)
-            {
-                int minutes = (int)duration;
-                int seconds = (int)Math.round((duration - minutes) * 100);
-                // Allow only whole seconds from 0 to 59.
-                if (seconds < 60
-                    && Math.abs(duration * 100 - Math.round(duration * 100))
-                        < 0.000001)
+                double duration = Double.parseDouble(text);
+
+                if (duration > 0 && duration <= 999.59)
                 {
-                    return duration;
+                    int minutes = (int)duration;
+                    int seconds = (int)Math.round(
+                        (duration - minutes) * 100);
+
+                    // Allow only whole seconds from 0 to 59.
+                    if (seconds < 60
+                        && Math.abs(duration * 100
+                            - Math.round(duration * 100)) < 0.000001)
+                    {
+                        return duration;
+                    }
                 }
             }
+            catch (NumberFormatException exception)
+            {
+                // Invalid numeric input is handled below.
+            }
+
+            System.out.println(
+                "Enter minutes.seconds from 0.01 to 999.59, "
+                    + "with seconds from 00 to 59.");
         }
-        catch (NumberFormatException exception)
-        {
-            // Invalid input is handled by the menu.
-        }
-        throw new PlaylistException(
-            "Enter minutes.seconds from 0.01 to 999.59, with seconds from 00 to 59.");
     }
+
 
     private static Song readSong() throws PlaylistException
     {

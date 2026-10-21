@@ -11,6 +11,14 @@ public class Playlist
     // ~ Fields ................................................................
     private String name;
     private LinkedChain<Song> songs;
+    
+    private static final int NO_ACTION = 0;
+    private static final int ADD_ACTION = 1;
+    private static final int REMOVE_ACTION = 2;
+
+    private int lastAction = NO_ACTION;
+    private Song lastSong;
+    private int lastSongIndex = -1;
 
     // ~ Constructors ..........................................................
     /**
@@ -48,7 +56,12 @@ public class Playlist
         throws PlaylistException
     {
         checkSongValidity(song);
+        
+        lastSongIndex = songs.size();
         songs.addToEnd(song);
+        
+        lastSong = song;
+        lastAction = ADD_ACTION;
     }
 
 
@@ -82,6 +95,10 @@ public class Playlist
         }
 
         songs = updated;
+        
+        lastSong = song;
+        lastSongIndex = index;
+        lastAction = ADD_ACTION;
     }
 
 
@@ -183,7 +200,12 @@ public class Playlist
 
             if (curr.equals(song))
             {
+                lastSong = curr;
+                lastSongIndex = i;
+                
                 songs.remove(curr);
+                lastAction = REMOVE_ACTION;
+                
                 return curr;
             }
         }
@@ -302,6 +324,48 @@ public class Playlist
         return combined;
     }
 
+    /**
+     * Undo the latest add or remove action
+     * 
+     * @throws PlaylistException if there is no action to undo
+     */
+    public void undoLastAction() throws PlaylistException{
+        if(lastAction == NO_ACTION) {
+            throw new PlaylistException("Nothing to undo");
+        }
+        
+        if(lastAction == ADD_ACTION) {
+            LinkedChain<Song> updated = new LinkedChain<Song>();
+            
+            for (int i = 0; i < songs.size(); i++)
+            {
+                if (i != lastSongIndex)
+                {
+                    updated.addToEnd(songs.get(i));
+                }
+            }
+
+            songs = updated;
+            
+        }
+        
+        else if (lastAction == REMOVE_ACTION)
+        {
+            // Restore the removed song to its original position.
+            if (lastSongIndex == songs.size())
+            {
+                songs.addToEnd(lastSong);
+            }
+            else
+            {
+                insertSong(lastSongIndex, lastSong);
+            }
+        }
+        
+        lastAction = NO_ACTION;
+        lastSong = null;
+        lastSongIndex = -1;
+    }
 
     /**
      * returns a String version of the playlist
@@ -395,7 +459,6 @@ public class Playlist
         if (song == null)
         {
             throw new PlaylistException("Song cannot be null");
-
         }
 
         for (int i = 0; i < songs.size(); i++)
@@ -409,4 +472,5 @@ public class Playlist
 
         throw new PlaylistException("Song not found");
     }
+    
 }

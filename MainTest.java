@@ -47,7 +47,7 @@ public class MainTest extends TestCase
     public void testBadMenuInput()
     {
         enter("hello\n-1\n11\n0\n");
-        assertTrue(output.toString().contains("Please enter a number from 0 to 10."));
+        assertTrue(output.toString().contains("Please enter a number from 0 to 11."));
         assertTrue(output.toString().contains("Goodbye!"));
     }
 
@@ -107,8 +107,8 @@ public class MainTest extends TestCase
             + "4\nSong\nArtist\nAlbum\n1.60\n"
             + "5\nabc\n3\n0\n");
         String text = output.toString();
+
         assertTrue(text.contains("Please enter some text."));
-        assertTrue(text.contains("Duration must be greater than zero."));
         assertTrue(text.contains("Enter minutes.seconds from 0.01 to 999.59"));
         assertTrue(text.contains("Please enter a number from 1 to 1."));
         assertTrue(text.contains("Number of songs: 0"));
@@ -116,15 +116,20 @@ public class MainTest extends TestCase
 
     public void testInvalidDurationValues()
     {
-        String[] values = { "abc", "NaN", "Infinity", "-1", "1000",
-            "4.60", "4.301" };
+        String[] values = { "abc", "NaN", "Infinity", "-1",
+            "1000", "4.60", "4.301" };
+
         for (int i = 0; i < values.length; i++)
         {
             output.reset();
-            enter("1\nMix\n4\nSong\nArtist\nAlbum\n" + values[i]
-                + "\n3\n0\n");
-            assertFalse(output.toString().contains("Song added."));
-            assertTrue(output.toString().contains("Number of songs: 0"));
+
+            enter("1\nMix\n4\nSong\nArtist\nAlbum\n"
+                + values[i] + "\n2.30\n3\n0\n");
+
+            String text = output.toString();
+
+            assertTrue(text.contains("Song added."));
+            assertTrue(text.contains("Number of songs: 1"));
         }
     }
 
@@ -145,7 +150,7 @@ public class MainTest extends TestCase
 
     public void testBadPlaylistSelection()
     {
-        enter("1\nFirst\n2\n2\n10\n1\n1\n0\n");
+        enter("1\nFirst\n10\n2\n1\n1\n0\n");
         String text = output.toString();
         assertTrue(text.contains("Please enter a number from 1 to 1."));
         assertTrue(text.contains("Please choose two different playlists."));
@@ -158,4 +163,50 @@ public class MainTest extends TestCase
         assertTrue(output.toString().contains("Input ended."));
         assertTrue(output.toString().contains("Goodbye!"));
     }
+    
+    public void testUndoAdd()
+    {
+        enter("1\nMix\n4\nSong\nArtist\nAlbum\n1.30\n"
+            + "11\n3\n0\n");
+
+        String text = output.toString();
+
+        assertTrue(text.contains("Song added."));
+        assertTrue(text.contains("Last add/remove action undone."));
+        assertTrue(text.contains("Number of songs: 0"));
+    }
+    
+    public void testUndoRemove()
+    {
+        enter("1\nMix\n4\nSong\nArtist\nAlbum\n1.30\n"
+            + "6\n1\n11\n3\n0\n");
+
+        String text = output.toString();
+
+        assertTrue(text.contains("Song removed."));
+        assertTrue(text.contains("Last add/remove action undone."));
+        assertTrue(text.contains("Number of songs: 1"));
+        assertTrue(text.contains("Sound Title: Song"));
+    }
+    
+    public void testUndoWithoutAction()
+    {
+        enter("1\nMix\n11\n0\n");
+
+        String text = output.toString();
+
+        assertTrue(text.contains("Current playlist: Mix"));
+        assertTrue(text.contains("Goodbye!"));
+    }
+    
+    public void testSelectPlaylist()
+    {
+        enter("1\nFirst\n1\nSecond\n2\n1\n3\n0\n");
+
+        String text = output.toString();
+
+        assertTrue(text.contains("Current playlist: First"));
+        assertTrue(text.contains("This playlist is empty."));
+    }
 }
+
